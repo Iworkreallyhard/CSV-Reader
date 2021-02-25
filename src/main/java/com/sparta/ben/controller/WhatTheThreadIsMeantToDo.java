@@ -12,10 +12,11 @@ public class WhatTheThreadIsMeantToDo implements Runnable {
     }
 
     public void run(){
-        EmployeeDAO.connectToDB();
+        //EmployeeDAO.connectToDB();
         for(int i = firstValue; i<=lastValue; i++) {
-            EmployeeDAO.insertData(employees.getEmployees().get(i));
+            //EmployeeDAO.insertData(employees.getEmployees().get(i));
         }
+        System.out.println(Thread.currentThread());
 
     }
 

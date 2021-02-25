@@ -1,24 +1,16 @@
 package com.sparta.ben;
 
-/**
- * Hello world!
- *
- */
-public class App 
+import com.sparta.ben.controller.Employees;
+
+public class App
 {
     public static void main(String[] args) {
-        //CSVReader.readValues("src/main/resources/EmployeeRecords.csv");
 
-        //Starter.employeesDBStarter();
-
-        //Starter.CSVReaderTester();
-
-        //Starter.duplicateTester();
-
-        //Starter.DAOTester();
-
-        MainProcess.start();
+        Employees employees = MainProcess.readCSV();
         System.out.println();
+        MainProcess.threadTest(employees);
+
+//        MainProcess.start();
 
     }
 }

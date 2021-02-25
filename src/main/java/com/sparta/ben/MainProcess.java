@@ -23,10 +23,23 @@ public class MainProcess {
         long timeFour = System.currentTimeMillis() - timeOne;
         System.out.println("table deleted time: " + timeFour + "ms");
 
-        ThreadController.doTheThreads(employees);
+        ThreadController.doTheThreads(employees,1);
 
         long timeFive = (System.currentTimeMillis() - timeOne) / 1000;
         System.out.println("Data inserted time: " + timeFive + "s");
+    }
+
+    public static Employees readCSV(){
+        long timeOne = System.currentTimeMillis();
+        Employees employees = CSVReader.readValues("src/main/resources/EmployeeRecords.csv");
+
+        long timeTwo = System.currentTimeMillis() - timeOne;
+        System.out.println("info read: " + timeTwo + "ms");
+        return employees;
+    }
+
+    public static void threadTest(Employees employees){
+        ThreadController.doTheThreads(employees,10);
     }
 
 }
