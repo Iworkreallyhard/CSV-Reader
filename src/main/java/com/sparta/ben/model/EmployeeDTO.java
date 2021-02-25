@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class EmployeeDTO {
-    //Emp ID,Name Prefix,First Name,Middle Initial,Last Name,Gender,E Mail,Date of Birth,Date of Joining,Salary
 
     private String emp_ID;
     private String namePrefix;
@@ -23,11 +22,10 @@ public class EmployeeDTO {
         this.firstName = firstName;
         this.lastName = lastName;
         this.middleInit = middleInit;
-        Gender = gender;
-        Email = email;
+        this.Gender = gender;
+        this.Email = email;
         setDateOfJoining(dateOfJoining);
         setDateOfBirth(dateOfBirth);
-
         setSalary(salary);
     }
 
