@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Properties;
 
-public class EmployeeDAO implements Runnable{
+public class EmployeeDAO{
 
     private static Connection connection;
     private static Properties properties = new Properties();
@@ -46,14 +46,9 @@ public class EmployeeDAO implements Runnable{
 
             while(resultSet.next()){
                 System.out.println(resultSet.getInt(1));
-                System.out.println(resultSet.getString(2));
-                System.out.println(resultSet.getString(3));
-                System.out.println(resultSet.getString(4));
-                System.out.println(resultSet.getString(5));
-                System.out.println(resultSet.getString(6));
-                System.out.println(resultSet.getString(7));
-                System.out.println(resultSet.getString(8));
-                System.out.println(resultSet.getString(9));
+                for(int i=1; i<10;i++){
+                    System.out.println(resultSet.getString(i));
+                }
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -64,7 +59,7 @@ public class EmployeeDAO implements Runnable{
         try {
             //Statement statement = connection.createStatement();
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `employees`.`employees` (`Employee_ID`, `Prefix`, `First_Name`, `Initial`, `Last_Name`, `Gender`, `Email`, `Date_of_Birth`, `Date_of_Joining`, `Salary`) VALUES (?,?,?,?,?,?,?,?,?,?)");
-            //statement.executeUpdate("INSERT INTO `employees`.`employees` (`Employee_ID`, `Prefix`, `First_Name`, `Initial`, `Last_Name`, `Gender`, `Email`, `Date_of_Birth`, `Date_of_Joining`, `Salary`) VALUES ('957', 'Mr.', 'Ben', 'M', 'Balls', 'M', 'b@b.com', '1998-04-30', '2020-01-01', '1000000')");
+
             preparedStatement.setString(1,emp_ID);
             preparedStatement.setString(2,namePrefix);
             preparedStatement.setString(3,firstName);
@@ -109,10 +104,5 @@ public class EmployeeDAO implements Runnable{
         }catch (Exception e){
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void run() {
-
     }
 }
