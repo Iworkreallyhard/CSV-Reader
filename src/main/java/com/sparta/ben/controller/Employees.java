@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Employees implements Runnable{
+public class Employees{
 
     private ArrayList<EmployeeDTO> employees = new ArrayList<>();
     private ArrayList<EmployeeDTO> corrupt = new ArrayList<>();
@@ -46,6 +46,7 @@ public class Employees implements Runnable{
     }
 
     private boolean isDuplicate(EmployeeDTO employeeDTO){
+        //todo: check employee id and email address for duplicates
         boolean check = false;
         for(EmployeeDTO employee: employees){
 
@@ -66,66 +67,24 @@ public class Employees implements Runnable{
         return check;
     }
 
+    private void checkIdForDuplicates(){
+        // TODO: 26/02/2021
+        // todo: also need to check corrupt arraylist
+    }
+
+    private void checkEmailforDuplicates(){
+        // TODO: 26/02/2021
+        //todo: also need to check corrupt arraylist
+    }
+
     public ArrayList<EmployeeDTO> getEmployees() {
         return employees;
     }
 
     public ArrayList<EmployeeDTO> getCorrupt() {
+        // TODO: 26/02/2021 what constitutes a corrupt file?
         return corrupt;
     }
-
-    @Override
-    public void run() {
-
-    }
-    //    private boolean isDuplicate(EmployeeDTO employeeDTO){
-//
-//        for(EmployeeDTO e: employees){
-//            if(e.getEmp_ID().equals(employeeDTO.getEmp_ID())){
-//                corrupt.add(employeeDTO);
-//                EmployeeDTO move = employees.get(employees.indexOf(e));
-//                employees.remove(employees.indexOf(e));
-//                corrupt.add(move);
-//                return true;
-//            }
-//            else {
-//                return false;
-//            }
-//        }
-//        return false;
-//    }
-
-
-
-
-//    private int isDuplicate(EmployeeDTO employeeDTO) {
-//        //todo
-//
-//        boolean added = false;
-//        int highestIndex = employees.size()-1;
-//        int lowestIndex = 0;
-//        int midIndex;
-//
-//
-//        while(highestIndex>lowestIndex){
-//            midIndex = (highestIndex+lowestIndex)/2;
-//            if(Integer.valueOf(employeeDTO.getEmp_ID()) > Integer.valueOf(String.valueOf((employees.get(midIndex))))){//employee id greater than midIndex
-//                lowestIndex = midIndex+1;
-//
-//            }else if(Integer.valueOf(employeeDTO.getEmp_ID()) > Integer.valueOf(String.valueOf(employees.get(midIndex)))){//new employee id lower than mid index
-//                highestIndex = midIndex-1;
-//            }else{//new employee id equals mid index
-//
-//
-//                break;
-//            }
-//        }
-//        if(highestIndex>lowestIndex){
-//            return -1;
-//        }else{
-//            return highestIndex;
-//        }
-//    }
 
 
 }
