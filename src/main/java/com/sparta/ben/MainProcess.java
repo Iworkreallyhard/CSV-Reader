@@ -10,8 +10,7 @@ public class MainProcess {
     public static void start(){
         long timeOne = System.currentTimeMillis();
 
-        Employees employees = CSVReader.readValues("src/main/resources/EmployeeRecords.csv");
-
+        Employees employees = readCSV();
         long timeTwo = System.currentTimeMillis() - timeOne;
         System.out.println("info read: " + timeTwo + "ms");
 
