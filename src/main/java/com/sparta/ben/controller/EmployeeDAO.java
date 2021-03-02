@@ -31,10 +31,11 @@ public class EmployeeDAO{
 
         try {
             connection = DriverManager.getConnection(url,userName,password);
+            System.out.println("Connected to Database");
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        System.out.println("Connected to Database");
+
     }
 
     public static void queryDB(String query){
