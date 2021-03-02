@@ -14,7 +14,7 @@ public class MainProcess {
         long timeTwo = System.currentTimeMillis() - timeOne;
         System.out.println("info read: " + timeTwo + "ms");
 
-        EmployeeDAO.connectToDB();
+        connectToDB();
         long timeThree = System.currentTimeMillis() - timeOne;
         System.out.println("DB connected time: " + timeThree + "ms");
 
@@ -41,4 +41,7 @@ public class MainProcess {
         ThreadController.doTheThreads(employees,10);
     }
 
+    public static void connectToDB(){
+        EmployeeDAO.connectToDB();
+    }
 }
