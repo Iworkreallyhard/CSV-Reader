@@ -3,15 +3,12 @@ package com.sparta.ben.controller;
 import com.sparta.ben.model.EmployeeDTO;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Employees{
 
     private ArrayList<EmployeeDTO> employees = new ArrayList<>();
     private ArrayList<EmployeeDTO> corrupt = new ArrayList<>();
-
-
+    private ArrayList<EmployeeDTO> duplicates = new ArrayList<>();
 
     public void addEmployees(EmployeeDTO[] newEmployees) {
         for(EmployeeDTO e: newEmployees){
@@ -27,25 +24,26 @@ public class Employees{
 
     public void addEmployee(EmployeeDTO newEmployee) {
         boolean isCorruptTest = false;
-        boolean isDuplicateTest = false;
+        DuplicateReturn isDuplicateTest;
         isCorruptTest = isCorrupt(newEmployee);
-
         isDuplicateTest = isDuplicate(newEmployee);
 
-        if (isCorruptTest==false&&isDuplicateTest==false) {
+        if (isCorruptTest==false&&isDuplicateTest.isDuplicate()==false) {
             employees.add(newEmployee);
+        }else if(isCorruptTest==true){
+            //todo: what happens when it is corrupt
+        }else {
+            //todo:what happens if duplicate
         }
-
-
     }
 
     private boolean isCorrupt(EmployeeDTO employeeDTO) {
         //todo - returns true if it is, false if not
-
+        // TODO: 26/02/2021 what constitutes a corrupt file?
         return false;
     }
 
-    private boolean isDuplicate(EmployeeDTO employeeDTO){
+    private DuplicateReturn isDuplicate(EmployeeDTO employeeDTO){
         //todo: check employee id and email address for duplicates
         boolean check = false;
         for(EmployeeDTO employee: employees){
@@ -64,17 +62,64 @@ public class Employees{
                 check = false;
             }
         }
-        return check;
+        return new DuplicateReturn();
     }
 
-    private void checkIdForDuplicates(){
+    private DuplicateReturn checkIdForDuplicates(EmployeeDTO employee){
         // TODO: 26/02/2021
         // todo: also need to check corrupt arraylist
+        int maxIndex = employees.size();
+        int minIndex = 0;
+        int midIndex;
+        DuplicateReturn ret = new DuplicateReturn();
+        while(maxIndex>minIndex){
+            midIndex = (maxIndex+minIndex)/2;
+            if(Integer.valueOf(employee.getEmp_ID()) == Integer.valueOf(employees.get(midIndex).getEmp_ID())){
+                ret.setDuplicate(true);
+                ret.setLocation(midIndex);
+                break;
+            }else if(Integer.valueOf(employee.getEmp_ID()) < Integer.valueOf(employees.get(midIndex).getEmp_ID())){
+                //todo: employee id less than minIndex employee id
+            }else{
+                //todo: employee id more than minIndex employee id
+            }
+        }
+        return ret;
     }
 
-    private void checkEmailforDuplicates(){
+
+    private DuplicateReturn checkEmailforDuplicates(EmployeeDTO employee){
         // TODO: 26/02/2021
         //todo: also need to check corrupt arraylist
+        DuplicateReturn ret = new DuplicateReturn();
+        ret.setDuplicate(false);
+
+        for(EmployeeDTO e: employees){
+            if(e.getEmail().equals(employee.getEmail())){
+                ret.setDuplicate(true);
+                ret.setLocation(employees.indexOf(e));
+                ret.setWhichList(0);
+            }
+//            if(Integer.valueOf(e.getEmp_ID())==Integer.valueOf(employee.getEmp_ID())){
+//
+//            }
+        }
+        for(EmployeeDTO e: duplicates){
+            if(e.getEmail().equals(employee.getEmail())){
+                ret.setDuplicate(true);
+                ret.setLocation(employees.indexOf(e));
+                ret.setWhichList(1);
+            }
+        }
+        for(EmployeeDTO e: corrupt){
+            if(e.getEmail().equals(employee.getEmail())){
+                ret.setDuplicate(true);
+                ret.setLocation(employees.indexOf(e));
+                ret.setWhichList(2);
+            }
+        }
+
+        return new DuplicateReturn();
     }
 
     public ArrayList<EmployeeDTO> getEmployees() {
@@ -82,9 +127,37 @@ public class Employees{
     }
 
     public ArrayList<EmployeeDTO> getCorrupt() {
-        // TODO: 26/02/2021 what constitutes a corrupt file?
         return corrupt;
     }
 
+    private class DuplicateReturn {
+        private boolean duplicate;
+        private int location;
+        private int whichList;
+
+        public boolean isDuplicate() {
+            return duplicate;
+        }
+
+        public int getLocation() {
+            return location;
+        }
+
+        public void setDuplicate(boolean duplicate) {
+            this.duplicate = duplicate;
+        }
+
+        public void setLocation(int location) {
+            this.location = location;
+        }
+
+        public int getWhichList() {
+            return whichList;
+        }
+
+        public void setWhichList(int whichList) {
+            this.whichList = whichList;
+        }
+    }
 
 }
