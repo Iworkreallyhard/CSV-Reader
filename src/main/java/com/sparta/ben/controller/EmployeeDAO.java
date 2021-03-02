@@ -1,7 +1,6 @@
 package com.sparta.ben.controller;
 
 import com.sparta.ben.model.EmployeeDTO;
-import com.sparta.ben.controller.Employees;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -58,7 +57,6 @@ public class EmployeeDAO{
 
     public static void insertData(String emp_ID, String namePrefix, String firstName,String middleInit,String lastName, String gender, String Email, LocalDate dateOfBirth, LocalDate dateOfJoining, Integer salary){
         try {
-            //Statement statement = connection.createStatement();
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `employees`.`employees` (`Employee_ID`, `Prefix`, `First_Name`, `Initial`, `Last_Name`, `Gender`, `Email`, `Date_of_Birth`, `Date_of_Joining`, `Salary`) VALUES (?,?,?,?,?,?,?,?,?,?)");
 
             preparedStatement.setString(1,emp_ID);
@@ -93,7 +91,6 @@ public class EmployeeDAO{
     }
 
     public static void insertData(Employees employees){
-        //todo
         insertData(employees.getEmployees());
 
     }
