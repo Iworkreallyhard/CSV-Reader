@@ -8,8 +8,9 @@ public class App
 
         Employees employees = MainProcess.readCSV();
         System.out.println();
-        MainProcess.threadTest(employees);
+        //MainProcess.threadTest(employees);
         MainProcess.connectToDB();
+        System.out.println();
 
     }
 }

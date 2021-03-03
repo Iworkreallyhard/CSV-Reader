@@ -24,16 +24,29 @@ public class Employees{
 
     public void addEmployee(EmployeeDTO newEmployee) {
         boolean isCorruptTest = false;
-        DuplicateReturn isDuplicateTest;
+        DuplicateReturn duplicateReturn;
         isCorruptTest = isCorrupt(newEmployee);
-        isDuplicateTest = isDuplicate(newEmployee);
+        duplicateReturn = isDuplicate(newEmployee);
 
-        if (isCorruptTest==false&&isDuplicateTest.isDuplicate()==false) {
+        if (isCorruptTest==false&&duplicateReturn.isDuplicate()==false) {
             employees.add(newEmployee);
         }else if(isCorruptTest==true){
             //todo: what happens when it is corrupt
         }else {
             //todo:what happens if duplicate
+            switch (duplicateReturn.whichList){
+                case 0://if it is in employees
+                    duplicates.add(newEmployee);
+                    duplicates.add(employees.get(duplicateReturn.getLocation()));
+                    employees.remove(duplicateReturn.getLocation());
+                    break;
+                case 1://if it is in duplicates
+                    duplicates.add(newEmployee);
+                    break;
+                case 2://if it is in corrupt
+                    //if one to be added is not corrupt, add it
+                    break;
+            }
         }
     }
 
@@ -45,24 +58,31 @@ public class Employees{
 
     private DuplicateReturn isDuplicate(EmployeeDTO employeeDTO){
         //todo: check employee id and email address for duplicates
-        boolean check = false;
+        DuplicateReturn ret = new DuplicateReturn();
+
         for(EmployeeDTO employee: employees){
-
-            check = employee.getEmp_ID().equals(employeeDTO.getEmp_ID());
-            if(check){
-                corrupt.add(employeeDTO);
-                EmployeeDTO move = employees.get(employees.indexOf(employee));
-                employees.remove(employees.indexOf(employee));
-                corrupt.add(move);
-
-                check = true;
+            ret.setDuplicate(employee.getEmp_ID().equals(employeeDTO.getEmp_ID()));
+            if(ret.isDuplicate()){
+                ret.setDuplicate(true);
+                ret.setWhichList(0);
                 break;
             }
             else {
-                check = false;
+                ret.setDuplicate(false);
             }
         }
-        return new DuplicateReturn();
+        for(EmployeeDTO employee: duplicates){
+            ret.setDuplicate(employee.getEmp_ID().equals(employeeDTO.getEmp_ID()));
+            if(ret.isDuplicate()){
+                ret.setDuplicate(true);
+                ret.setWhichList(1);
+                break;
+            }
+            else {
+                ret.setDuplicate(false);
+            }
+        }
+        return ret;
     }
 
     private DuplicateReturn checkIdForDuplicates(EmployeeDTO employee){
@@ -86,7 +106,6 @@ public class Employees{
         }
         return ret;
     }
-
 
     private DuplicateReturn checkEmailforDuplicates(EmployeeDTO employee){
         // TODO: 26/02/2021
