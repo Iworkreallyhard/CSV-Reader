@@ -3,21 +3,26 @@ package com.sparta.ben.controller;
 import com.sparta.ben.model.EmployeeDTO;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
-public class Employees{
+public class Employees {
 
     private ArrayList<EmployeeDTO> employees = new ArrayList<>();
     private ArrayList<EmployeeDTO> corrupt = new ArrayList<>();
     private ArrayList<EmployeeDTO> duplicates = new ArrayList<>();
 
+    private final int employeeListNum = 0;
+    private final int duplicateListNum = 1;
+    private final int corruptListNum = 2;
+
     public void addEmployees(EmployeeDTO[] newEmployees) {
-        for(EmployeeDTO e: newEmployees){
+        for (EmployeeDTO e : newEmployees) {
             addEmployee(e);
         }
     }
 
     public void addEmployees(ArrayList<EmployeeDTO> newEmployees) {
-        for(EmployeeDTO e: newEmployees){
+        for (EmployeeDTO e : newEmployees) {
             addEmployee(e);
         }
     }
@@ -28,23 +33,28 @@ public class Employees{
         isCorruptTest = isCorrupt(newEmployee);
         duplicateReturn = isDuplicate(newEmployee);
 
-        if (isCorruptTest==false&&duplicateReturn.isDuplicate()==false) {
+        if (isCorruptTest == false && duplicateReturn.isDuplicate() == false) {
             employees.add(newEmployee);
-        }else if(isCorruptTest==true){
-            //todo: what happens when it is corrupt
-        }else {
-            //todo:what happens if duplicate
-            switch (duplicateReturn.whichList){
-                case 0://if it is in employees
+        } else if (isCorruptTest == true) {
+            corrupt.add(newEmployee);
+        } else {
+            switch (duplicateReturn.whichList) {
+                case employeeListNum://if it is in employees
                     duplicates.add(newEmployee);
                     duplicates.add(employees.get(duplicateReturn.getLocation()));
                     employees.remove(duplicateReturn.getLocation());
                     break;
-                case 1://if it is in duplicates
+
+                case duplicateListNum://if it is in duplicates
                     duplicates.add(newEmployee);
                     break;
-                case 2://if it is in corrupt
+
+                case corruptListNum://if it is in corrupt
                     //if one to be added is not corrupt, add it
+                    duplicates.add(newEmployee);
+                    break;
+                case duplicateListNum+corruptListNum://if it is in both corrupt and duplicate
+                    //todo
                     break;
             }
         }
@@ -56,89 +66,138 @@ public class Employees{
         return false;
     }
 
-    private DuplicateReturn isDuplicate(EmployeeDTO employeeDTO){
+    private DuplicateReturn isDuplicate(EmployeeDTO employeeDTO) {
         //todo: check employee id and email address for duplicates
         DuplicateReturn ret = new DuplicateReturn();
+        ret.setWhichList(employeeListNum);
 
-        for(EmployeeDTO employee: employees){
+        for (EmployeeDTO employee : employees) {
             ret.setDuplicate(employee.getEmp_ID().equals(employeeDTO.getEmp_ID()));
-            if(ret.isDuplicate()){
-                ret.setDuplicate(true);
-                ret.setWhichList(0);
+            if (ret.isDuplicate()) {
+                ret.setWhichList(employeeListNum);
                 break;
-            }
-            else {
-                ret.setDuplicate(false);
             }
         }
-        for(EmployeeDTO employee: duplicates){
+
+        for (EmployeeDTO employee : duplicates) {
             ret.setDuplicate(employee.getEmp_ID().equals(employeeDTO.getEmp_ID()));
-            if(ret.isDuplicate()){
-                ret.setDuplicate(true);
-                ret.setWhichList(1);
+            if (ret.isDuplicate()) {
+                ret.setWhichList(ret.getWhichList()+duplicateListNum);
                 break;
             }
-            else {
-                ret.setDuplicate(false);
+        }
+
+        for (EmployeeDTO employee : corrupt) {
+            ret.setDuplicate(employee.getEmp_ID().equals(employeeDTO.getEmp_ID()));
+            if (ret.isDuplicate()) {
+                ret.setWhichList(ret.getWhichList()+corruptListNum);
+                break;
             }
         }
         return ret;
     }
 
-    private DuplicateReturn checkIdForDuplicates(EmployeeDTO employee){
-        // TODO: 26/02/2021
-        // todo: also need to check corrupt arraylist
-        int maxIndex = employees.size();
-        int minIndex = 0;
-        int midIndex;
+    private DuplicateReturn checkIdForDuplicates(EmployeeDTO employee) {
+
         DuplicateReturn ret = new DuplicateReturn();
-        while(maxIndex>minIndex){
-            midIndex = (maxIndex+minIndex)/2;
-            if(Integer.valueOf(employee.getEmp_ID()) == Integer.valueOf(employees.get(midIndex).getEmp_ID())){
-                ret.setDuplicate(true);
-                ret.setLocation(midIndex);
-                break;
-            }else if(Integer.valueOf(employee.getEmp_ID()) < Integer.valueOf(employees.get(midIndex).getEmp_ID())){
-                //todo: employee id less than minIndex employee id
-            }else{
-                //todo: employee id more than minIndex employee id
-            }
-        }
-        return ret;
-    }
+        ret.setDuplicate(false);
 
-    private DuplicateReturn checkEmailforDuplicates(EmployeeDTO employee){
+        ret = checkListForDuplicateIds(employees,employee);
+        if(ret.isDuplicate()){
+            ret.setWhichList(employeeListNum);
+            return ret;
+        }
+
+        ret = checkListForDuplicateIds(duplicates,employee);
+        if(ret.isDuplicate()){
+            ret.setWhichList(duplicateListNum);
+            return ret;
+        }
+
+        ret = checkListForDuplicateIds(corrupt,employee);
+        if(ret.isDuplicate()){
+            ret.setWhichList(corruptListNum);
+            return ret;
+        }
+
+        return new DuplicateReturn();
+    }
+    //this is a next step. the intention is to use a binary search
+//    private DuplicateReturn checkIdForDuplicates(EmployeeDTO employee) {
+        // TODO: 26/02/2021
+        // todo: also need to check corrupt and duplicates arraylist
+
+//        int maxIndex = employees.size();
+//        int minIndex = 0;
+//        int midIndex;
+//        DuplicateReturn ret = new DuplicateReturn();
+//        ret.setDuplicate(false);
+//        while (maxIndex > minIndex) {
+//            midIndex = (maxIndex + minIndex) / 2;
+//            if (Integer.valueOf(employee.getEmp_ID()) == Integer.valueOf(employees.get(midIndex).getEmp_ID())) {
+//                ret.setDuplicate(true);
+//                ret.setLocation(midIndex);
+//                break;
+//            } else if (Integer.valueOf(employee.getEmp_ID()) < Integer.valueOf(employees.get(midIndex).getEmp_ID())) {
+//                maxIndex = midIndex-1;
+//            } else {
+//                minIndex=midIndex+1;
+//            }
+//        }
+//        return ret;
+//    }
+
+    private DuplicateReturn checkEmailforDuplicates(EmployeeDTO employee) {
         // TODO: 26/02/2021
         //todo: also need to check corrupt arraylist
         DuplicateReturn ret = new DuplicateReturn();
         ret.setDuplicate(false);
 
-        for(EmployeeDTO e: employees){
-            if(e.getEmail().equals(employee.getEmail())){
-                ret.setDuplicate(true);
-                ret.setLocation(employees.indexOf(e));
-                ret.setWhichList(0);
-            }
-//            if(Integer.valueOf(e.getEmp_ID())==Integer.valueOf(employee.getEmp_ID())){
-//
-//            }
+        ret = checkListForDuplicateEmails(employees,employee);
+        if(ret.isDuplicate()){
+            ret.setWhichList(employeeListNum);
+            return ret;
         }
-        for(EmployeeDTO e: duplicates){
-            if(e.getEmail().equals(employee.getEmail())){
-                ret.setDuplicate(true);
-                ret.setLocation(employees.indexOf(e));
-                ret.setWhichList(1);
-            }
+
+        ret = checkListForDuplicateEmails(duplicates,employee);
+        if(ret.isDuplicate()){
+            ret.setWhichList(duplicateListNum);
+            return ret;
         }
-        for(EmployeeDTO e: corrupt){
-            if(e.getEmail().equals(employee.getEmail())){
-                ret.setDuplicate(true);
-                ret.setLocation(employees.indexOf(e));
-                ret.setWhichList(2);
-            }
+
+        ret = checkListForDuplicateEmails(corrupt,employee);
+        if(ret.isDuplicate()){
+            ret.setWhichList(corruptListNum);
+            return ret;
         }
 
         return new DuplicateReturn();
+    }
+
+    private DuplicateReturn checkListForDuplicateEmails(ArrayList<EmployeeDTO> listToBeChecked,EmployeeDTO employee){
+
+        DuplicateReturn ret = new DuplicateReturn();
+        ret.setDuplicate(false);
+        for (EmployeeDTO e : listToBeChecked) {
+            if (e.getEmail().equals(employee.getEmail())) {
+                ret.setDuplicate(true);
+                ret.setLocation(listToBeChecked.indexOf(e));
+            }
+        }
+        return ret;
+    }
+
+    private DuplicateReturn checkListForDuplicateIds(ArrayList<EmployeeDTO> listToBeChecked,EmployeeDTO employee){
+        DuplicateReturn ret = new DuplicateReturn();
+        ret.setDuplicate(false);
+
+        for (EmployeeDTO e : listToBeChecked) {
+            if(Integer.valueOf(e.getEmp_ID())==Integer.valueOf(employee.getEmp_ID())){
+                ret.setDuplicate(true);
+                ret.setLocation(listToBeChecked.indexOf(e));
+            }
+        }
+        return ret;
     }
 
     public ArrayList<EmployeeDTO> getEmployees() {
