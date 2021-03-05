@@ -16,6 +16,7 @@ public class EmployeeDAO{
 
     private static void createProperties(){
         try {
+
             properties.load(new FileReader("src/main/resources/login.properties"));
         } catch (IOException e) {
             e.printStackTrace();

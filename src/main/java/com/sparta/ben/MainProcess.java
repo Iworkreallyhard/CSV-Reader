@@ -4,6 +4,7 @@ import com.sparta.ben.controller.CSVReader;
 import com.sparta.ben.controller.EmployeeDAO;
 import com.sparta.ben.controller.Employees;
 import com.sparta.ben.controller.ThreadController;
+import com.sparta.ben.model.PropertiesContainer;
 
 public class MainProcess {
 
@@ -30,7 +31,8 @@ public class MainProcess {
 
     public static Employees readCSV(){
         long timeOne = System.currentTimeMillis();
-        Employees employees = CSVReader.readValues("src/main/resources/EmployeeRecord.csv");
+        PropertiesContainer.createProperties();
+        Employees employees = CSVReader.readValues(PropertiesContainer.getCsvLocation());
 
         long timeTwo = System.currentTimeMillis() - timeOne;
         System.out.println("info read: " + timeTwo + "ms");
