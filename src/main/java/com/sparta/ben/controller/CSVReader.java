@@ -16,6 +16,9 @@ public class CSVReader {
             bufferedReader.readLine();
             int count = 0;
             while ((line = bufferedReader.readLine()) != null) {
+                if(line.equals("")){
+                    break;
+                }
                 String[] lineSplit = line.split(",");
                 EmployeeDTO employeeDTO = new EmployeeDTO(lineSplit[0],lineSplit[1],lineSplit[2],lineSplit[3],lineSplit[4],lineSplit[5],lineSplit[6],lineSplit[7],lineSplit[8], lineSplit[9]);
                 employees.addEmployee(employeeDTO);

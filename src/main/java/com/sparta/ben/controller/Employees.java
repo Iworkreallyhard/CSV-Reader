@@ -32,8 +32,8 @@ public class Employees {
         DuplicateReturn duplicateReturn;
         isCorruptTest = isCorrupt(newEmployee);
         duplicateReturn = isDuplicate(newEmployee);
-
-        if (isCorruptTest == false && duplicateReturn.isDuplicate() == false) {
+        //todo:have to completely redo this now that whichlist has been removed and isDuplicate returns an array of booleans
+        if (isCorruptTest == false && duplicateReturn.isDuplicate()[0] == false &&duplicateReturn.isDuplicate()[1] == false&&duplicateReturn.isDuplicate()[2] == false) {
             employees.add(newEmployee);
         } else if (isCorruptTest == true) {
             corrupt.add(newEmployee);
@@ -69,31 +69,13 @@ public class Employees {
     private DuplicateReturn isDuplicate(EmployeeDTO employeeDTO) {
         //todo: check employee id and email address for duplicates
         DuplicateReturn ret = new DuplicateReturn();
-        ret.setWhichList(employeeListNum);
 
-        for (EmployeeDTO employee : employees) {
-            ret.setDuplicate(employee.getEmp_ID().equals(employeeDTO.getEmp_ID()));
-            if (ret.isDuplicate()) {
-                ret.setWhichList(employeeListNum);
-                break;
-            }
+        ret = checkEmailforDuplicates(employeeDTO);
+        if(ret.isDuplicate()){
+            return ret;
         }
+        ret = checkIdForDuplicates(employeeDTO);
 
-        for (EmployeeDTO employee : duplicates) {
-            ret.setDuplicate(employee.getEmp_ID().equals(employeeDTO.getEmp_ID()));
-            if (ret.isDuplicate()) {
-                ret.setWhichList(ret.getWhichList()+duplicateListNum);
-                break;
-            }
-        }
-
-        for (EmployeeDTO employee : corrupt) {
-            ret.setDuplicate(employee.getEmp_ID().equals(employeeDTO.getEmp_ID()));
-            if (ret.isDuplicate()) {
-                ret.setWhichList(ret.getWhichList()+corruptListNum);
-                break;
-            }
-        }
         return ret;
     }
 
@@ -192,7 +174,7 @@ public class Employees {
         ret.setDuplicate(false);
 
         for (EmployeeDTO e : listToBeChecked) {
-            if(Integer.valueOf(e.getEmp_ID())==Integer.valueOf(employee.getEmp_ID())){
+            if(Integer.valueOf(e.getEmp_ID()).equals(Integer.valueOf(employee.getEmp_ID()))){
                 ret.setDuplicate(true);
                 ret.setLocation(listToBeChecked.indexOf(e));
             }
@@ -209,11 +191,10 @@ public class Employees {
     }
 
     private class DuplicateReturn {
-        private boolean duplicate;
+        private boolean[] duplicate = new boolean[3];//this means it can be a duplicate in multiple lists
         private int location;
-        private int whichList;
 
-        public boolean isDuplicate() {
+        public boolean[] isDuplicate() {
             return duplicate;
         }
 
@@ -221,20 +202,12 @@ public class Employees {
             return location;
         }
 
-        public void setDuplicate(boolean duplicate) {
-            this.duplicate = duplicate;
+        public void setDuplicate(boolean duplicate,int index) {
+            this.duplicate[index] = duplicate;
         }
 
         public void setLocation(int location) {
             this.location = location;
-        }
-
-        public int getWhichList() {
-            return whichList;
-        }
-
-        public void setWhichList(int whichList) {
-            this.whichList = whichList;
         }
     }
 
